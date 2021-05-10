@@ -31,6 +31,7 @@ public class StudyPost extends Post{
         this.location.put("latitude",location.getLatitude());
     }
 
+    // getter
     public int getMax() {
         return max;
     }
@@ -41,5 +42,18 @@ public class StudyPost extends Post{
 
     public Map<String,Double> getLocation(){
         return location;
+    }
+
+    // setter
+    public void setUsers(List<String> users) {
+        this.users = users;
+    }
+
+    public void setMax(int max) {
+        this.max = max;
+    }
+
+    public void setLocation(Map<String, Double> location) {
+        this.location = location;
     }
 }

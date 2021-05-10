@@ -23,7 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
  * 내가 만들어야 하는 함수가......
  * 1. 글을 올려주는 함수 --> 완료
  * 2. 코멘트 올려주는 함수 --> 완료
- * 3. 타이틀 가져와서 arraylist 리턴해주는 함수 --> 에타는 타이틀이 없는데 어케하지?
+ * 3. 타이틀 가져와서 arraylist 리턴해주는 함수
  * 4. 글 들어가면 전체 데이터 넘겨주는 함수 --> 걍 get 때리면 되는데 이거 unpacking을 프런트해서 해줄까?
  * 5. 글 삭제하는 기능(젤 나중에하자)
  * 6. 인원을 추가해주는 함수 --> 완료
@@ -37,6 +37,7 @@ public class HelpPosting {
         db = FirebaseFirestore.getInstance();
     }
 
+    //------------------------- Project ------------------------------------------------------------------------------------------------------
     public void postProject(ProjectPost post) {
         db.collection("Projects")
                 .add(post)
@@ -55,32 +56,36 @@ public class HelpPosting {
 
     }
 
-    public void getProject(String postID){
+    public void getProject(String postID) {
         DocumentReference docRef = db.collection("Projects").document(postID);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 ProjectPost post = documentSnapshot.toObject(ProjectPost.class);
-                Log.d("test","dddd: "+ post.getDate());
+                Log.d("test", "dddd: " + post.getDate());
+
+
             }
         });
     }
 
     public void getProjects() {
-        db.collection("Projects")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("test", document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w("test", "Error getting documents.", task.getException());
-                        }
+        Task<QuerySnapshot> tt = db.collection("Projects").get();
+
+        tt.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : tt.getResult()) {
+                        Log.d("test", document.getId() + " => " + document.getData());
                     }
-                });
+                } else {
+                    Log.w("test", "Error getting documents.", task.getException());
+                }
+            }
+        });
+
+
     }
 
 
@@ -100,6 +105,8 @@ public class HelpPosting {
         return true;
     }
 
+
+    //------------------------- Study ------------------------------------------------------------------------------------------------------
     public void postStudy(StudyPost post) {
         db.collection("Studies")
                 .add(post)
@@ -165,6 +172,8 @@ public class HelpPosting {
                 });
 
     }
+
+    //------------------------- QnA ------------------------------------------------------------------------------------------------------
 
     public void getQnAs() {
         db.collection("QnA")

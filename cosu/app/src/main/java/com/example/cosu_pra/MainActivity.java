@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
 //        helpPost.updateProjectComment(comment1,"7fyYktEOHsmVDeDzTr2e"); // you must get postID
 
         // Read a post
-        helpPost.getProject("7fyYktEOHsmVDeDzTr2e");
+        // helpPost.getProject("7fyYktEOHsmVDeDzTr2e");
+
+        // Read all post
+        helpPost.getProjects();
     }
 }

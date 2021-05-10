@@ -25,6 +25,7 @@ public class ProjectPost extends Post {
         users.add(writer);
     }
 
+    // getter
     public int getMax() {
         return max;
     }
@@ -34,5 +35,12 @@ public class ProjectPost extends Post {
     }
 
 
+    // setter
+    public void setUsers(List<String> users) {
+        this.users = users;
+    }
 
+    public void setMax(int max) {
+        this.max = max;
+    }
 }
