@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "178678869487",
+    "firebase_url": "https://cosu-632c5-default-rtdb.firebaseio.com",
+    "project_id": "cosu-632c5",
+    "storage_bucket": "cosu-632c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178678869487:android:5c1fd065c6589deff01a1a",
+        "android_client_info": {
+          "package_name": "com.example.cosu_pra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "178678869487-gfjvs6kkbvqo51913ujl0hi818aje84d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyQG9uY2Pysxw0H321dbvuuCiNe7BoZTs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "178678869487-gfjvs6kkbvqo51913ujl0hi818aje84d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
