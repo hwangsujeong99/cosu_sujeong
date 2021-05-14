@@ -1,10 +1,16 @@
 package com.example.cosu_pra;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.cosu_pra.DTO.Category;
 import com.example.cosu_pra.DTO.Comment;
+import com.example.cosu_pra.DTO.Post;
 import com.example.cosu_pra.DTO.ProjectPost;
 import com.example.cosu_pra.DTO.QnAPost;
 import com.example.cosu_pra.DTO.StudyPost;
@@ -12,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -19,27 +26,40 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Map;
+
 /**
  * 내가 만들어야 하는 함수가......
- * 1. 글을 올려주는 함수 --> 완료
- * 2. 코멘트 올려주는 함수 --> 완료
- * 3. 타이틀 가져와서 arraylist 리턴해주는 함수
- * 4. 글 들어가면 전체 데이터 넘겨주는 함수 --> 걍 get 때리면 되는데 이거 unpacking을 프런트해서 해줄까?
- * 5. 글 삭제하는 기능(젤 나중에하자)
- * 6. 인원을 추가해주는 함수 --> 완료
  * 7. 새 글 올라오면 알려주는 함수? --> 이건 공부가 더 필요할 듯
  * 8. 검색기능
  */
 public class HelpPosting {
-    FirebaseFirestore db;
+    public static final String PROJECT = "Projects";
+    public static final String STUDY = "Studies";
+    public static final String QNA = "QnA";
+    public static final String FROM_POST = "posting";
+    public static final String MSG_DONE = "done";
 
-    public HelpPosting() {
+
+    private FirebaseFirestore db;
+    private Context context;
+
+
+    public HelpPosting(Context context) {
         db = FirebaseFirestore.getInstance();
+        this.context = context;
     }
 
-    //------------------------- Project ------------------------------------------------------------------------------------------------------
-    public void postProject(ProjectPost post) {
-        db.collection("Projects")
+    /**
+     * post
+     * posting a post
+     *
+     * @param collection: path of post, use static final values
+     *                    PROJECT, STUDY, QNA
+     * @param post:       post to write
+     */
+    public void post(String collection, Post post) {
+        db.collection(collection)
                 .add(post)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -53,150 +73,115 @@ public class HelpPosting {
                         Log.w("Firebase", "Error adding document", e);
                     }
                 });
-
-    }
-
-    public void getProject(String postID) {
-        DocumentReference docRef = db.collection("Projects").document(postID);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                ProjectPost post = documentSnapshot.toObject(ProjectPost.class);
-                Log.d("test", "dddd: " + post.getDate());
-
-
-            }
-        });
-    }
-
-    public void getProjects() {
-        Task<QuerySnapshot> tt = db.collection("Projects").get();
-
-        tt.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : tt.getResult()) {
-                        Log.d("test", document.getId() + " => " + document.getData());
-                    }
-                } else {
-                    Log.w("test", "Error getting documents.", task.getException());
-                }
-            }
-        });
-
-
     }
 
 
-    public void updateProjectComment(Comment comment, String postID) {
-        DocumentReference documentRef = db.collection("Projects").document(postID);
-
-        documentRef.update("comments", FieldValue.arrayUnion(comment));
-    }
-
-    public void updateProjectUser(String userID, String postID) {
-        DocumentReference documentRef = db.collection("Projects").document(postID);
-
-        documentRef.update("users", FieldValue.arrayUnion(userID));
-    }
-
-    public boolean isProjectFull(String postID) {
-        return true;
-    }
-
-
-    //------------------------- Study ------------------------------------------------------------------------------------------------------
-    public void postStudy(StudyPost post) {
-        db.collection("Studies")
-                .add(post)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+    /**
+     * deletePost
+     * delete a post in collection path which id is postID
+     *
+     * @param collection: path of post, use static final values
+     *                    PROJECT, STUDY, QNA
+     * @param postID:     id of post
+     */
+    public void deletePost(String collection, String postID) {
+        db.collection(collection).document(postID)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("Firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
+                    public void onSuccess(Void aVoid) {
+                        Log.d("test", "DocumentSnapshot successfully deleted!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("Firebase", "Error adding document", e);
-                    }
-                });
-
-    }
-
-    public void getStudies() {
-        db.collection("Studies")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("test", document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w("test", "Error getting documents.", task.getException());
-                        }
+                        Log.w("test", "Error deleting document", e);
                     }
                 });
     }
 
-    public void updateStudyComment(Comment comment, String postID) {
-        DocumentReference documentRef = db.collection("Studies").document(postID);
+    /**
+     * addComment
+     * add a comment on post which id is postID
+     *
+     * @param collection: path of post,use static final values
+     *                    PROJECT, STUDY, QNA
+     * @param postID:     id of post
+     * @param comment:    comment to add
+     */
+    public void addComment(String collection, String postID, Comment comment) {
+        DocumentReference documentRef = db.collection(collection).document(postID);
 
         documentRef.update("comments", FieldValue.arrayUnion(comment));
     }
 
-    public void updateStudyUser(String userID, String postID) {
-        DocumentReference documentRef = db.collection("Studies").document(postID);
-
+    /**
+     * addUser
+     * add user to user list in post
+     * NOTICE: please check user list is not full
+     *
+     * @param collection: path of post,use static final values
+     *                    PROJECT, STUDY
+     * @param postID:     id of post
+     * @param userID:     id of user that add in user list
+     */
+    public void addUser(String collection,String postID, String userID) {
+        // 일단 인원수가 비었는지 확인
+        DocumentReference documentRef = db.collection(collection).document(postID);
         documentRef.update("users", FieldValue.arrayUnion(userID));
     }
 
 
-    public void postQnA(QnAPost post) {
-        db.collection("QnA")
-                .add(post)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("Firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("Firebase", "Error adding document", e);
-                    }
-                });
-
+    /**
+     * getPostsQuery
+     *
+     * @param collection: path of post,use static final values
+     *                        PROJECT, STUDY, QNA
+     * @return Task<QuerySnapshot>: use addOnCompleteListener method instead Thread
+     *
+     * example)
+     * getAllPost(.....).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+     *      @Override
+     *      public void onComplete(@NonNull Task<QuerySnapshot> task) {
+     *          if (task.isSuccessful()) {
+     *              for (QueryDocumentSnapshot document : tt.getResult()) {
+     *                  posts.put(document.getId(), document.toObject(ProjectPost.class)); // 맵으로 넣는 방법
+     *              }
+     *          }
+     *      }
+     * });
+     */
+    public Task<QuerySnapshot> getAllPosts(String collection) {
+        return db.collection(collection).get();
     }
 
-    //------------------------- QnA ------------------------------------------------------------------------------------------------------
-
-    public void getQnAs() {
-        db.collection("QnA")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("test", document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w("test", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
+    /**
+     * getPost
+     * get a post from firebase
+     *
+     * @param collection: path of post,use static final values
+     *                        PROJECT, STUDY, QNA
+     * @param postID: id of post
+     * @return Task<DocumentSnapshot>: use addOnSuccessListener method instead Thread
+     *
+     * example)
+     * getPost(....).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+     *             @Override
+     *             public void onSuccess(DocumentSnapshot documentSnapshot) {
+     *                  post = documentSnapshot.toObject(ProjectPost.class); // post는 원하는 post 객체를 사용하세요
+     *            }
+     *         });
+     */
+    public Task<DocumentSnapshot> getPost(String collection, String postID){
+        return db.collection("Projects").document(postID).get();
     }
 
-    public void updateQnAComment(Comment comment, String postID) {
-        DocumentReference documentRef = db.collection("QnA").document(postID);
+    public Task<QuerySnapshot> searchPostByCategory(String collection,String category){
+        CollectionReference postsRef = db.collection("collection");
 
-        documentRef.update("comments", FieldValue.arrayUnion(comment));
+        postsRef.whereArrayContains("category", "west_coast");
+        return null;
     }
-
 
 }
