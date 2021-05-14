@@ -37,17 +37,17 @@ import java.util.Map;
  * - 역할
  * 글 올리기 -> 완료
  * 글 지우기 ->완료
- * 글 수정하기
+ * 글 수정하기 -> 완료
  * 댓글 올리기 -> 완료
  * 댓글 지우기 -> 완료
- * 팀원으로 참여하기
- * 팀원으로 참여한것 취소하기
+ * 팀원으로 참여하기 -> 완료, Testing에 예시 있음
+ * 팀원으로 참여한것 취소하기 --> 완료
  * 검색기능 -글쓴이 -> 완료
  * 검색기능 -카테고리
  * 검색기능 -내용
- * 신고기능
- * 관심 유저 등록하기
- * 관심 글 등록하기
+ * 신고기능 -> 따로 컬렉션 만들어야징
+ * 관심 유저 등록하기 -> 유저정보에 저장하면 좋을 듯
+ * 관심 글 등록하기 -> 유저정보에 저장하면 좋을 듯
  */
 public class HelpPosting {
     public static final String PROJECT = "Projects";
@@ -62,7 +62,7 @@ public class HelpPosting {
     }
 
     /**
-     * post
+     * addPost
      * posting a post
      * --> testing is complete
      *
@@ -114,6 +114,10 @@ public class HelpPosting {
         db.collection(collection).document(postID).delete();
     }
 
+    public void modifyPost(String collection, String postID, Post post){
+        db.collection(collection).document(postID).set(post);
+    }
+
     /**
      * getAllPosts
      * --> test complete
@@ -125,7 +129,6 @@ public class HelpPosting {
     public Task<QuerySnapshot> getAllPosts(String collection) {
         return db.collection(collection).get();
     }
-
 
     /**
      * addComment
@@ -141,15 +144,56 @@ public class HelpPosting {
                 .collection(COMMENTS).add(comment);
     }
 
+    /**
+     * deleteComment
+     * delete a comment
+     *
+     * @param collection: path of post
+     * @param postID:     post id
+     * @param commentID:  comment id
+     */
     public void deleteComment(String collection, String postID, String commentID) {
         db.collection(collection).document(postID)
                 .collection(COMMENTS).document(commentID).delete();
     }
 
+    /**
+     * getComments
+     * get a task contains comments
+     *
+     * @param collection: path of post
+     * @param postID:     post id
+     * @return Task<QuerySnapshot> to use addOnSuccessListener
+     */
     public Task<QuerySnapshot> getComments(String collection, String postID) {
         return db.collection(collection).document(postID).collection(COMMENTS).get();
     }
 
+    /**
+     * addUser
+     * add user to post's member
+     *
+     * @param collection: path of post(PROJECT or STUDY)
+     * @param postID:     post id
+     * @param userID:     user id
+     */
+    public void addUser(String collection, String postID, String userID) {
+        DocumentReference docRef = db.collection(collection).document(postID);
+        docRef.update("users", FieldValue.arrayUnion(userID));
+    }
+
+    /**
+     * removeUser
+     * remove user in users list
+     *
+     * @param collection: path of post(PROJECT or STUDY)
+     * @param postID:     post id
+     * @param userID:     user id to remove
+     */
+    public void removeUser(String collection, String postID, String userID) {
+        DocumentReference docRef = db.collection(collection).document(postID);
+        docRef.update("users", FieldValue.arrayRemove(userID));
+    }
 
     /**
      * searchPostByWriter

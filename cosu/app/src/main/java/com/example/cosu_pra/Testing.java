@@ -25,7 +25,7 @@ public class Testing {
 
     Testing() {
         pst = new HelpPosting();
-        readPost();
+        modifyPost();
     }
 
     // ok
@@ -116,12 +116,12 @@ public class Testing {
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                       ProjectPost post = documentSnapshot.toObject(ProjectPost.class); // post는 원하는 post 객체를 사용하세요
-                        Log.d("test",post.getWriter());
-                        Log.d("test",post.getContent());
-                        Log.d("test",post.getTitle());
-                        Log.d("test",post.getMax() +"");
-                        Log.d("test",post.getUsers() +"");
+                        ProjectPost post = documentSnapshot.toObject(ProjectPost.class); // post는 원하는 post 객체를 사용하세요
+                        Log.d("test", post.getWriter());
+                        Log.d("test", post.getContent());
+                        Log.d("test", post.getTitle());
+                        Log.d("test", post.getMax() + "");
+                        Log.d("test", post.getUsers() + "");
                     }
                 });
 
@@ -140,6 +140,47 @@ public class Testing {
                                 Log.d("test", cmt.getWriter());
                             }
                         }
+                    }
+                });
+    }
+
+    // ok
+    private void addUser() {
+        // consistency is not integrity in short time
+        for (String userID : new String[]
+                {"cat1", "nabi", "blue lion", "gray cat", "hello cat", "crazy cat", "mimi", "bibi"})
+            pst.getPost(pst.PROJECT, "5mCaTT8j2qmoXkFxnywY")
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            int max, now;
+                            max = documentSnapshot.toObject(ProjectPost.class).getMax();
+                            now = documentSnapshot.toObject(ProjectPost.class).getUsers().size();
+                            if (max > now) {
+                                pst.addUser(pst.PROJECT, "5mCaTT8j2qmoXkFxnywY", userID);
+                                if(max - now == 1){
+                                    // 채팅방 열기
+                                }
+                            } else {
+                                Log.d("test", userID + " room is full");
+                            }
+                        }
+                    });
+    }
+
+    // ok
+    private void removeUser() {
+        pst.removeUser(pst.PROJECT, "5mCaTT8j2qmoXkFxnywY", "bigCat");
+    }
+
+    private void modifyPost(){
+        pst.getPost(pst.PROJECT, "5mCaTT8j2qmoXkFxnywY")
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        ProjectPost post = documentSnapshot.toObject(ProjectPost.class); // post는 원하는 post 객체를 사용하세요
+                        post.setContent("today is friday, friday, friday, io iio iiooi");
+                        pst.modifyPost(pst.PROJECT, "5mCaTT8j2qmoXkFxnywY", post);
                     }
                 });
     }
