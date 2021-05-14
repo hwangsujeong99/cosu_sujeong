@@ -18,8 +18,8 @@ public class ProjectPost extends Post {
         super();
     }
 
-    public ProjectPost(String title, String writer, String contents, Category category, int max_users) {
-        super(title, writer, contents, category);
+    public ProjectPost(String title, String writer, String contents, int max_users) {
+        super(title, writer, contents);
         max = max_users;
         users = new ArrayList<String>();
         users.add(writer);

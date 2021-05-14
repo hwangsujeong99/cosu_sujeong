@@ -6,17 +6,18 @@ import java.util.Calendar;
 public class Comment {
     private String writer;
     private String date;
-    private String m_contents;
+    private String content;
 
     public Comment(){}
 
     public Comment(String user, String content){
         writer = user;
-        m_contents = content;
+        this.content = content;
         date = new SimpleDateFormat("yyyy/ MM / dd / HH:mm:ss").
                 format(Calendar.getInstance().getTime());
     }
 
+    // getter
     public String getWriter(){
         return writer;
     }
@@ -25,8 +26,20 @@ public class Comment {
         return date;
     }
 
-    public String getContents() {
-        return m_contents;
+    public String getContent() {
+        return content;
     }
 
+    // setter
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setWriter(String writer) {
+        this.writer = writer;
+    }
 }

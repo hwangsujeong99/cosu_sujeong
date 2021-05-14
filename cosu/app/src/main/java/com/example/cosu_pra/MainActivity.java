@@ -17,11 +17,14 @@ import com.example.cosu_pra.DTO.ProjectPost;
 import com.example.cosu_pra.DTO.QnAPost;
 import com.example.cosu_pra.DTO.StudyPost;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,14 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        posts = new HashMap<String,ProjectPost>();
-
-
-        /* Example */
-        helpPost = new HelpPosting(getApplicationContext());
-
-
+        Testing testing = new Testing();
 
     }
 

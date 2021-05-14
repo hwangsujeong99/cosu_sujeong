@@ -4,8 +4,8 @@ public class QnAPost extends Post{
 
     public QnAPost(){}
 
-    public QnAPost(String title, String writer_id, String content, Category category){
-        super(title, writer_id,content,category);
+    public QnAPost(String title, String writer_id, String content){
+        super(title, writer_id,content);
     }
 
 

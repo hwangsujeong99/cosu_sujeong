@@ -7,28 +7,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StudyPost extends Post{
+public class StudyPost extends Post {
     private int max;
     private List<String> users;
-    private Map<String,Double> location;
+    private Map<String, Double> location;
 
-    public StudyPost() {}
+    public StudyPost() {
+    }
 
-    public StudyPost(String title,String writer_id, String contents, Category category, int max_users) {
-        super(title, writer_id, contents, category);
+    public StudyPost(String title, String writer_id, String contents, int max_users) {
+        super(title, writer_id, contents);
 
         max = max_users;
         users = new ArrayList<String>();
         users.add(writer_id);
     }
 
-    public StudyPost(String title, String writer_id, String contents, Category category,
+    public StudyPost(String title, String writer_id, String contents,
                      int max_users, Location location) {
-        this(title, writer_id, contents, category,max_users);
+        this(title, writer_id, contents, max_users);
 
         this.location = new HashMap<>();
-        this.location.put("altitude",location.getAltitude());
-        this.location.put("latitude",location.getLatitude());
+        this.location.put("altitude", location.getAltitude());
+        this.location.put("latitude", location.getLatitude());
     }
 
     // getter
@@ -40,7 +41,7 @@ public class StudyPost extends Post{
         return users;
     }
 
-    public Map<String,Double> getLocation(){
+    public Map<String, Double> getLocation() {
         return location;
     }
 
