@@ -23,6 +23,14 @@ public class StudyPost extends Post {
         users.add(writer_id);
     }
 
+    public StudyPost(String title, String writer_id, String contents, int max_users, List<String> category) {
+        super(title, writer_id, contents, category);
+
+        max = max_users;
+        users = new ArrayList<String>();
+        users.add(writer_id);
+    }
+
     public StudyPost(String title, String writer_id, String contents,
                      int max_users, Location location) {
         this(title, writer_id, contents, max_users);

@@ -11,10 +11,20 @@ public class Post {
     private String writer;
     private String date;
     private String content;
+    private List<String> category;
+    private int report;
 
     public Post() {
         date = new SimpleDateFormat("yyyy/ MM / dd / HH:mm:ss").
                 format(Calendar.getInstance().getTime());
+        category = new ArrayList<String>();
+        report = 0;
+    }
+
+    public Post(String writer, String content) {
+        this();
+        this.writer = writer;
+        this.content = content;
     }
 
     public Post(String title, String writer, String content) {
@@ -22,10 +32,10 @@ public class Post {
         this.title = title;
     }
 
-    public Post(String writer, String content) {
-        this();
-        this.writer = writer;
-        this.content = content;
+    public Post(String title, String writer, String content,List<String> category) {
+        this(writer, content);
+        this.title = title;
+        this.category = category;
     }
 
 
@@ -46,6 +56,12 @@ public class Post {
         return title;
     }
 
+    public List<String> getCategory() {
+        return category;
+    }
+
+    public int getReport(){ return report;}
+
     // setter
     public void setTitle(String title) {
         this.title = title;
@@ -61,5 +77,13 @@ public class Post {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public void setCategory(List<String> category){
+        this.category = category;
+    }
+
+    public void setReport(int report){
+        this.report = report;
     }
 }

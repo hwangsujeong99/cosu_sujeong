@@ -26,15 +26,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * HelpPosting 사용설명서
- * <p>
- * - 역할
+ * HelpPosting 역할
  * 글 올리기 -> 완료
  * 글 지우기 ->완료
  * 글 수정하기 -> 완료
@@ -43,17 +43,20 @@ import java.util.Map;
  * 팀원으로 참여하기 -> 완료, Testing에 예시 있음
  * 팀원으로 참여한것 취소하기 --> 완료
  * 검색기능 -글쓴이 -> 완료
- * 검색기능 -카테고리
- * 검색기능 -내용
- * 신고기능 -> 따로 컬렉션 만들어야징
+ * 검색기능 -카테고리 -> OR연산으로 계산 가능
+ * 검색기능 -내용 -> 불가
+ * 신고기능 -> 포스트는 완료
  * 관심 유저 등록하기 -> 유저정보에 저장하면 좋을 듯
  * 관심 글 등록하기 -> 유저정보에 저장하면 좋을 듯
+ *
+ * 시간 남으면 -> 대댓글, 댓글 신고
  */
 public class HelpPosting {
     public static final String PROJECT = "Projects";
     public static final String STUDY = "Studies";
     public static final String QNA = "QnA";
     public static final String COMMENTS = "comments";
+
 
     private FirebaseFirestore db;
 
@@ -114,7 +117,7 @@ public class HelpPosting {
         db.collection(collection).document(postID).delete();
     }
 
-    public void modifyPost(String collection, String postID, Post post){
+    public void modifyPost(String collection, String postID, Post post) {
         db.collection(collection).document(postID).set(post);
     }
 
@@ -197,7 +200,6 @@ public class HelpPosting {
 
     /**
      * searchPostByWriter
-     * <p>
      * search post which contains search word
      *
      * @param collection: path of post,use static final values(PROJECT, STUDY, QNA)
@@ -208,6 +210,28 @@ public class HelpPosting {
     public Task<QuerySnapshot> searchPostByWriter(String collection, String writer) {
         return db.collection(collection).whereEqualTo("writer", writer).get();
     }
+
+    /**
+     * searchPostByCategory
+     * search post by category that contains any value
+     *
+     * @param collection: path of post(PROJECT, STUDY, QNA)
+     * @param category:   String array to use search
+     * @return Task<QuerySnapshot>:
+     * use addOnCompleteListener method instead Thread
+     */
+    public Task<QuerySnapshot> searchPostByCategory(String collection, String[] category) {
+        return db.collection(collection).whereArrayContainsAny("category", Arrays.asList(category)).get();
+    }
+
+    public Task<QuerySnapshot> getReportPost(String collection) {
+        return db.collection(collection).whereGreaterThan("report",0).get();
+    }
+
+    public void setReportPostZero(String collection, String postID){
+        db.collection(collection).document(postID).update("report",0);
+    }
+
 
 
 }

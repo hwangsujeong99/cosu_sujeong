@@ -17,53 +17,68 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Testing {
     HelpPosting pst;
+    private Object ArrayList;
 
     Testing() {
         pst = new HelpPosting();
-        modifyPost();
+        report();
     }
 
     // ok
     private void writePost() {
 
-        // Project
+        List<String> cte1 = new ArrayList<String>();
+        cte1.add("c");
+        cte1.add("c++");
+        cte1.add("c#");
+        cte1.add("developer");
 
-        ProjectPost pp1 = new ProjectPost("first project post", "god",
-                "This is content. it maybe changed", 3);
-        ProjectPost pp2 = new ProjectPost("second project post", "dog",
-                "This is content. it maybe changed. but i do not want to change it", 7);
-        ProjectPost pp3 = new ProjectPost("third project post", "cat",
-                "please help me", 6);
+        List<String> cte2 = new ArrayList<String>();
+        cte2.add("java");
+        cte2.add("css");
+        cte2.add("html");
+        cte2.add("developer");
+
+
+        // Project
+        ProjectPost pp1 = new ProjectPost("cate project post help", "god",
+                "This is content. it maybe changed", 3, cte1);
+        ProjectPost pp2 = new ProjectPost("hohoho project post", "dog",
+                "This is content. it maybe changed. but i do not want to change it", 7, cte1);
+        ProjectPost pp3 = new ProjectPost("ahahaha project post", "cat",
+                "please help me", 6, cte2);
         pst.addPost(pst.PROJECT, pp1);
         pst.addPost(pst.PROJECT, pp2);
         pst.addPost(pst.PROJECT, pp3);
 
-        // Study
-        StudyPost sp1 = new StudyPost("first study post", "lion",
-                "This is content. it maybe changed", 3);
-        StudyPost sp2 = new StudyPost("second study post", "tiger",
-                "This is content. it maybe changed. but i do not want to change it", 7);
-        StudyPost sp3 = new StudyPost("third study post", "horse",
-                "please help me", 6);
-        pst.addPost(pst.STUDY, sp1);
-        pst.addPost(pst.STUDY, sp2);
-        pst.addPost(pst.STUDY, sp3);
-
-        // QnA
-        QnAPost qq1 = new QnAPost("first study post", "queen",
-                "This is content. it maybe changed");
-        QnAPost qq2 = new QnAPost("how can i get good score?", "rabbit",
-                "This is content. it maybe changed");
-        QnAPost qq3 = new QnAPost("help firesoter", "king",
-                "fire store help");
-        pst.addPost(pst.QNA, qq1);
-        pst.addPost(pst.QNA, qq2);
-        pst.addPost(pst.QNA, qq3);
+//        // Study
+//        StudyPost sp1 = new StudyPost("first study post", "lion",
+//                "This is content. it maybe changed", 3);
+//        StudyPost sp2 = new StudyPost("second study post", "tiger",
+//                "This is content. it maybe changed. but i do not want to change it", 7);
+//        StudyPost sp3 = new StudyPost("third study post", "horse",
+//                "please help me", 6);
+//        pst.addPost(pst.STUDY, sp1);
+//        pst.addPost(pst.STUDY, sp2);
+//        pst.addPost(pst.STUDY, sp3);
+//
+//        // QnA
+//        QnAPost qq1 = new QnAPost("first study post", "queen",
+//                "This is content. it maybe changed");
+//        QnAPost qq2 = new QnAPost("how can i get good score?", "rabbit",
+//                "This is content. it maybe changed");
+//        QnAPost qq3 = new QnAPost("help firesoter", "king",
+//                "fire store help");
+//        pst.addPost(pst.QNA, qq1);
+//        pst.addPost(pst.QNA, qq2);
+//        pst.addPost(pst.QNA, qq3);
     }
 
     // ok
@@ -158,7 +173,7 @@ public class Testing {
                             now = documentSnapshot.toObject(ProjectPost.class).getUsers().size();
                             if (max > now) {
                                 pst.addUser(pst.PROJECT, "5mCaTT8j2qmoXkFxnywY", userID);
-                                if(max - now == 1){
+                                if (max - now == 1) {
                                     // 채팅방 열기
                                 }
                             } else {
@@ -173,7 +188,7 @@ public class Testing {
         pst.removeUser(pst.PROJECT, "5mCaTT8j2qmoXkFxnywY", "bigCat");
     }
 
-    private void modifyPost(){
+    private void modifyPost() {
         pst.getPost(pst.PROJECT, "5mCaTT8j2qmoXkFxnywY")
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -184,4 +199,74 @@ public class Testing {
                     }
                 });
     }
+
+    // ok
+    private void search() {
+//        // search by writer
+//        pst.searchPostByWriter(pst.PROJECT, "dog")
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            Map<String, ProjectPost> comments = new HashMap<String, ProjectPost>();
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                comments.put(document.getId(), document.toObject(ProjectPost.class)); // 맵으로 넣는 방법
+//                            }
+//                            for (ProjectPost cmt : comments.values()) {
+//                                Log.d("test", "writer");
+//                                Log.d("test", cmt.getContent());
+//                                Log.d("test", cmt.getWriter());
+//                            }
+//                        }
+//                    }
+//                });
+//        Log.d("test", "writer");
+        // search by category
+        String[] cate = new String[]{"c"};
+        pst.searchPostByCategory(pst.PROJECT, cate)
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Map<String, ProjectPost> comments = new HashMap<String, ProjectPost>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                comments.put(document.getId(), document.toObject(ProjectPost.class)); // 맵으로 넣는 방법
+                            }
+                            for (ProjectPost cmt : comments.values()) {
+                                Log.d("test", cmt.getContent());
+                                Log.d("test", cmt.getWriter());
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void report() {
+        // get report's post
+        pst.getReportPost(pst.PROJECT)
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Map<String, ProjectPost> comments = new HashMap<String, ProjectPost>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                comments.put(document.getId(), document.toObject(ProjectPost.class)); // 맵으로 넣는 방법
+                            }
+                            for (ProjectPost cmt : comments.values()) {
+                                Log.d("test", cmt.getContent());
+                                Log.d("test", cmt.getWriter());
+                                Log.d("test", cmt.getDate());
+                                Log.d("test", cmt.getTitle());
+                                Log.d("test", cmt.getMax() + "");
+
+
+                            }
+                        }
+                    }
+                });
+
+        //pst.setReportPostZero(pst.PROJECT, "mdUTbav2vLaAVCfJ34cg");
+    }
+
+
 }

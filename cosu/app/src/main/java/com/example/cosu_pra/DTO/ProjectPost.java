@@ -25,6 +25,14 @@ public class ProjectPost extends Post {
         users.add(writer);
     }
 
+    public ProjectPost(String title, String writer, String contents,
+                       int max_users, List<String> category) {
+        super(title, writer, contents,category);
+        max = max_users;
+        users = new ArrayList<String>();
+        users.add(writer);
+    }
+
     // getter
     public int getMax() {
         return max;
