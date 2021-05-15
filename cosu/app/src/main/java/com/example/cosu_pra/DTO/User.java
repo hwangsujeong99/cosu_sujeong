@@ -2,20 +2,20 @@ package com.example.cosu_pra.DTO;
 
 public class User{
 
-private String id;
+private String email;
 private String pwd;
 private String realName;
 private String nickName;
 
-public User(String id,String pwd,String realName, String nickName){
-    this.id = id;
+public User(String email,String pwd,String realName, String nickName){
+    this.email = email;
     this.pwd = pwd;
     this.realName = realName;
     this.nickName = nickName;
 }
     // getter
-    public String getId() {
-        return id;
+    public String getEmail() {
+        return email;
     }
 
     public String getPwd() {
@@ -31,8 +31,8 @@ public User(String id,String pwd,String realName, String nickName){
     }
 
     //setter
-    public void setId(String id) {
-        this.id = id;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setPwd(String pwd) {
